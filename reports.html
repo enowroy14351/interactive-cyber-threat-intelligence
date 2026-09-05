@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTI Dashboard - Intelligence Reports</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- html2pdf Library for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <h1 class="brand-title">CTI DASHBOARD</h1>
+            <nav class="nav-links">
+                <a href="index.html">Overview</a>
+                <a href="threats.html">Threats</a>
+                <a href="malware.html">Malware</a>
+                <a href="reports.html" class="active">Reports</a>
+            </nav>
+        </div>
+        <div class="nav-right">
+            <span class="pulse-dot"></span> <span class="status-text">Live</span>
+            <span class="timestamp" id="live-timestamp">--</span>
+        </div>
+    </header>
+
+    <!-- MAIN REPORTS CONTAINER -->
+    <main class="reports-wrapper" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+        
+        <!-- EXPORT ACTION BUTTONS -->
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Executive Threat Intelligence Briefs</h2>
+            <div>
+                <button id="download-csv-btn" class="filter-btn">Export Raw CSV</button>
+                <button id="download-pdf-btn" class="filter-btn active">Download PDF Brief</button>
+            </div>
+        </div>
+
+        <!-- REPORT BRIEF CONTENT (PRINTABLE PDF TARGET) -->
+        <div id="pdf-report-content" class="panel" style="padding: 30px; background: #0B1437; border-radius: 12px; color: #fff;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1B254B; padding-bottom: 15px; margin-bottom: 20px;">
+                <div>
+                    <h1 style="color: #00B4D8; margin: 0; font-size: 24px;">CYBER THREAT INTELLIGENCE SUMMARY BRIEF</h1>
+                    <p style="color: #8F9BBA; margin: 5px 0 0 0;">Classification: TLP:AMBER | Security Operations Center</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="margin: 0; color: #8F9BBA; font-size: 13px;">GENERATED UTC</p>
+                    <p id="report-date" style="margin: 3px 0 0 0; font-weight: bold; color: #00B4D8;"></p>
+                </div>
+            </div>
+
+            <section style="margin-bottom: 25px;">
+                <h3 style="color: #E63946; border-bottom: 1px solid #1B254B; padding-bottom: 5px;">1. Executive Overview</h3>
+                <p style="color: #A3AED0; line-height: 1.6;">
+                    During the current observation window, automated telemetry ingested indicators across active malware campaigns, phishing vectors, 
+                    and command-and-control (C2) infrastructures. Primary vectors exhibit concentrated activity originating from Eastern 
+                    European and East Asian infrastructure hubs.
+                </p>
+            </section>
+
+            <section style="margin-bottom: 25px;">
+                <h3 style="color: #F4A261; border-bottom: 1px solid #1B254B; padding-bottom: 5px;">2. Threat Landscape Highlights</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px; color: #A3AED0;">
+                    <thead>
+                        <tr style="background: #111C44; text-align: left;">
+                            <th style="padding: 10px; border: 1px solid #1B254B;">Metric</th>
+                            <th style="padding: 10px; border: 1px solid #1B254B;">Observed Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">Highest Volume Family</td>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">LockBit 3.0 / Emotet</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">Primary Target Sectors</td>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">Financial Services, Technology Infrastructure</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">Mean Confidence Level</td>
+                            <td style="padding: 10px; border: 1px solid #1B254B;">High (85%+)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h3 style="color: #2A9D8F; border-bottom: 1px solid #1B254B; padding-bottom: 5px;">3. Recommended Mitigation Steps</h3>
+                <ul style="color: #A3AED0; line-height: 1.8; padding-left: 20px;">
+                    <li>Block identified outbound IP indicators on peripheral firewalls.</li>
+                    <li>Update email gateway rules to quarantine incoming macro-enabled document attachments.</li>
+                    <li>Enforce strict multi-factor authentication (MFA) across remote access endpoints.</li>
+                </ul>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- REPORT GENERATION SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set Timestamp
+            const dateEl = document.getElementById('report-date');
+            if (dateEl) dateEl.textContent = new Date().toUTCString();
+
+            // Navbar clock
+            const clockEl = document.getElementById('live-timestamp');
+            if (clockEl) {
+                setInterval(() => {
+                    clockEl.textContent = new Date().toUTCString().replace('GMT', 'UTC');
+                }, 1000);
+            }
+
+            // PDF Export Trigger
+            document.getElementById('download-pdf-btn').addEventListener('click', () => {
+                const element = document.getElementById('pdf-report-content');
+                const opt = {
+                    margin:       0.4,
+                    filename:     `CTI_Intelligence_Brief_${new Date().toISOString().slice(0,10)}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2 },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save();
+            });
+
+            // CSV Export Trigger
+            document.getElementById('download-csv-btn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('https://cyber-threat-dashboad.onrender.com/api/threats');
+                    const data = await response.json();
+                    
+                    let csvContent = "data:text/csv;charset=utf-8,Title,Attack Type,Country,IOC Count,Created\n";
+                    data.forEach(row => {
+                        csvContent += `"${row.title}","${row.attack_type}","${row.country}",${row.ioc_count},"${row.created}"\n`;
+                    });
+
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", `CTI_Threats_Export_${new Date().toISOString().slice(0,10)}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (err) {
+                    alert("Failed to export CSV feed data.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

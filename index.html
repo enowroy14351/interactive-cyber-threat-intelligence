@@ -1,0 +1,167 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CTI Dashboard</title>
+
+        <!-- External CSS & Libraries -->
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- 3D Globe Library -->
+        <script src="https://unpkg.com/globe.gl"></script>
+        <!-- HTML2PDF Exporter -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    </head>
+    <body>
+
+        <!-- TOP NAVBAR -->
+        <header class="navbar">
+            <div class="nav-left">
+                <h1 class="brand-title">CTI DASHBOARD</h1>
+                <nav class="nav-links">
+                    <a href="index.html" class="active">Overview</a>
+                    <a href="threats.html">Threats</a>
+                    <a href="malware.html">Malware</a>
+                    <a href="reports.html">Reports</a>
+                </nav>
+            </div>
+            <div class="nav-right">
+                <span class="pulse-dot"></span> <span class="status-text">Live</span>
+                <span class="timestamp" id="live-timestamp">Aug 23 2026 19:54:00</span>
+            </div>
+        </header>
+
+        <!-- TOP KPI CARDS ROW -->
+        <section class="kpi-grid">
+            <div class="kpi-card red-border">
+                <span class="kpi-label">THREATS TODAY</span>
+                <div class="kpi-value" id="kpi-threats-today">0</div>
+                <span class="kpi-subtext positive">↑ 12% from yesterday</span>
+            </div>
+            <div class="kpi-card yellow-border">
+                <span class="kpi-label">TOP ATTACK TYPE</span>
+                <div class="kpi-value yellow-text" id="kpi-top-attack">--</div>
+                <span class="kpi-subtext">34% of all threats</span>
+            </div>
+            <div class="kpi-card purple-border">
+                <span class="kpi-label">ACTIVE MALWARE</span>
+                <div class="kpi-value purple-text" id="kpi-active-malware">Emotet</div>
+                <span class="kpi-subtext">287 detections</span>
+            </div>
+            <div class="kpi-card blue-border">
+                <span class="kpi-label">TOP ORIGIN</span>
+                <div class="kpi-value blue-text" id="kpi-top-origin">--</div>
+                <span class="kpi-subtext">22% of all attacks</span>
+            </div>
+        </section>
+
+        <!-- FILTER BAR ROW -->
+        <section class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Filter:</span>
+                <button class="filter-btn active">All types</button>
+                <button class="filter-btn">Phishing</button>
+                <button class="filter-btn">Ransomware</button>
+                <button class="filter-btn">DDoS</button>
+                <button class="filter-btn">Malware</button>
+                <button class="filter-btn">SQL Injection</button>
+                <button class="filter-btn">Brute Force</button>
+            </div>
+            <div class="filter-dropdowns">
+            <select class="dropdown" data-filter="time"><option>Last 7 days</option></select>
+            <select class="dropdown" data-filter="country"><option value="ALL">All Countries</option></select>
+            <select class="dropdown" data-filter="severity">
+            <option value="ALL">All Severities</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+        </select>
+    </div>
+        </section>
+
+        <!-- MIDDLE ROW: 3D GLOBE & RIGHT ANALYTICS PANELS -->
+        <section class="mid-grid">
+            <!-- 3D WORLD ATTACK GLOBE PANEL -->
+            <div class="panel map-panel">
+                <div class="panel-header">
+                    <h3>3D Cyber Threat Globe</h3>
+                    <span class="badge">Live feed</span>
+                </div>
+                <div id="map"></div>
+                <div class="map-footer">
+                    <div class="legend">
+                        <span class="dot high"></span> High Attack Volume
+                        <span class="dot info"></span> Target Hub
+                    </div>
+                    <span class="footer-hint">Drag to rotate globe</span>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: ATTACK SPLIT & MALWARE BARS -->
+            <div class="right-column">
+                <div class="panel chart-panel">
+                    <div class="panel-header">
+                        <h3>Attack distribution</h3>
+                        <span class="drilldown-link">Drill down</span>
+                    </div>
+                    <div class="donut-container">
+                        <canvas id="attackDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel chart-panel">
+                    <div class="panel-header">
+                        <h3>Top malware families</h3>
+                    </div>
+                    <div class="bar-container">
+                        <canvas id="topMalwareChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOTTOM ROW: TIMELINE & LATEST PULSES TABLE -->
+        <section class="bottom-grid">
+            <div class="panel trend-panel">
+                <div class="panel-header">
+                    <h3>30-day threat trend</h3>
+                </div>
+                <div class="trend-chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="trend-stats">
+                    <div><strong>1,842</strong><span>Peak threats</span></div>
+                    <div><strong>847</strong><span>Avg/day</span></div>
+                    <div><strong class="negative">↓ 8%</strong><span>Trend</span></div>
+                    <div><strong>73%</strong><span>Resolved</span></div>
+                </div>
+            </div>
+
+            <div class="panel table-panel">
+                <div class="panel-header">
+                    <h3>Latest threat pulses</h3>
+                    <span class="badge">Auto-refresh 60s</span>
+                </div>
+                <table class="pulse-table">
+                    <thead>
+                        <tr>
+                            <th>THREAT NAME</th>
+                            <th>TYPE</th>
+                            <th>ORIGIN</th>
+                            <th>SEVERITY</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pulse-table-body">
+                        <!-- Loaded via main.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Application JavaScript Scripts -->
+        <script src="js/geocodes.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+    </html>

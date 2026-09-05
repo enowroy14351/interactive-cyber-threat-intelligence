@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTI Dashboard - Threats</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <h1 class="brand-title">CTI DASHBOARD</h1>
+            <nav class="nav-links">
+                <a href="index.html">Overview</a>
+                <a href="threats.html" class="active">Threats</a>
+                <a href="malware.html">Malware</a>
+                <a href="reports.html">Reports</a>
+            </nav>
+        </div>
+        <div class="nav-right">
+            <span class="pulse-dot"></span> <span class="status-text">Live</span>
+            <span class="timestamp" id="live-timestamp">Aug 23 2026 19:30:00</span>
+        </div>
+    </header>
+
+    <section class="filter-bar" style="margin-top: 20px;">
+        <div class="filter-group">
+            <span class="filter-label">Filter Severity:</span>
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">High</button>
+            <button class="filter-btn">Medium</button>
+            <button class="filter-btn">Low</button>
+        </div>
+        <div class="filter-dropdowns">
+            <input type="text" placeholder="Search Indicator / IP..." style="background: #111827; border: 1px solid #1F2937; color: #fff; padding: 6px 12px; border-radius: 4px;">
+        </div>
+    </section>
+
+    <section style="padding: 0 24px; margin-top: 20px;">
+        <div class="panel table-panel">
+            <div class="panel-header">
+                <h3>Active Cyber Threat Intelligence Pulses</h3>
+                <span class="badge">Real-time Feed</span>
+            </div>
+            <table class="pulse-table">
+                <thead>
+                    <tr>
+                        <th>THREAT TITLE</th>
+                        <th>ATTACK TYPE</th>
+                        <th>TARGET SECTOR</th>
+                        <th>ORIGIN</th>
+                        <th>IOC COUNT</th>
+                        <th>SEVERITY</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Emotet Botnet Wave</td>
+                        <td>Malware / Loader</td>
+                        <td>Financial Services</td>
+                        <td>RU</td>
+                        <td>287</td>
+                        <td><span class="sev-badge high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>BEC Africa Executive Campaign</td>
+                        <td>Phishing</td>
+                        <td>Energy & Utilities</td>
+                        <td>NG</td>
+                        <td>42</td>
+                        <td><span class="sev-badge high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>LockBit 3.0 Ransomware Surge</td>
+                        <td>Ransomware</td>
+                        <td>Healthcare</td>
+                        <td>CN</td>
+                        <td>119</td>
+                        <td><span class="sev-badge med">Med</span></td>
+                    </tr>
+                    <tr>
+                        <td>Qakbot Trojan Infrastructure</td>
+                        <td>Trojan</td>
+                        <td>Government</td>
+                        <td>US</td>
+                        <td>64</td>
+                        <td><span class="sev-badge med">Med</span></td>
+                    </tr>
+                    <tr>
+                        <td>Global Shodan Port Recon</td>
+                        <td>Reconnaissance</td>
+                        <td>Telecom</td>
+                        <td>US</td>
+                        <td>12</td>
+                        <td><span class="sev-badge low">Low</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</body>
+</html>

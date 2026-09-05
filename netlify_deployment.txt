@@ -1,0 +1,4 @@
+Drag the contents of this folder (or the ZIP itself if Netlify accepts it) into Netlify.
+index.html is intentionally at the root for a static deployment.
+The frontend is configured to use the existing Render API at:
+https://cyber-threat-dashboad.onrender.com/api/threats
